@@ -1,4 +1,4 @@
-# Seeloud - Static Site Deployment Platform
+# Seeloud - Deployment Platform
 
 Seeloud is a modern deployment platform that simplifies deploying static sites directly from Git repositories. Connect your GitHub repo, and Seeloud handles cloning, building, and hosting—all in one seamless workflow.
 
