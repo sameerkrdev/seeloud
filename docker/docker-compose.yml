@@ -1,5 +1,24 @@
 
 services:
+  seeloudfn-runtime:
+    build:
+      context: ..
+      dockerfile: docker/seeloudfn-runtime/Dockerfile
+    restart: unless-stopped
+    env_file:
+      - ../apps/seeloudfn-runtime/.env
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      SEELOUDFN_CACHE_DIR: /var/seeloudfn
+      WORKERD_BIN: /app/node_modules/workerd/bin/workerd
+    volumes:
+      - seeloudfn_cache:/var/seeloudfn
+    depends_on:
+      - redis
+    networks:
+      - seeloud
+
   postgres:
     image: postgres:alpine
     environment:
@@ -25,6 +44,7 @@ services:
 volumes:
   postgres_data:
   redis_data:
+  seeloudfn_cache:
 
 networks:
   seeloud:

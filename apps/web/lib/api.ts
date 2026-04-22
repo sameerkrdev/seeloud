@@ -69,4 +69,51 @@ export const api = {
     const t = token()
     if (t) window.location.href = `${BASE}/auth/github?token=${encodeURIComponent(t)}`
   },
+
+  getSeeloudfnFunctions: () =>
+    request<{
+      functions: {
+        id: string
+        name: string
+        status: string
+        entry: string
+        buildCommand: string | null
+        errorMessage: string | null
+        bundleKey: string | null
+        createdAt: string
+        updatedAt: string
+      }[]
+    }>('/api/seeloudfn'),
+
+  getSeeloudfnFunction: (id: string) =>
+    request<{
+      function: {
+        id: string
+        name: string
+        status: string
+        entry: string
+        buildCommand: string | null
+        errorMessage: string | null
+        bundleKey: string | null
+        createdAt: string
+        updatedAt: string
+      }
+      invokeUrl: string
+    }>(`/api/seeloudfn/${id}`),
+
+  uploadSeeloudfnFunction: (formData: FormData) => {
+    const t = token()
+    return fetch(`${BASE}/api/seeloudfn/upload`, {
+      method: 'POST',
+      headers: t ? { Authorization: `Bearer ${t}` } : {},
+      body: formData,
+    }).then(async (res) => {
+      const data = await res.json()
+      if (!res.ok) throw new Error((data as { error?: string }).error ?? 'Upload failed')
+      return data as { id: string; name: string; status: string; invokeUrl: string }
+    })
+  },
+
+  deleteSeeloudfnFunction: (id: string) =>
+    request<{ ok: boolean }>(`/api/seeloudfn/${id}`, { method: 'DELETE' }),
 }

@@ -6,6 +6,8 @@ import appRouter from './src/routes/app'
 import github from './src/routes/github'
 import internal from './src/routes/internal'
 import domains from './src/routes/domains'
+import seeloudfn from './src/routes/seeloudfn'
+import seeloudfnInvoke from './src/routes/seeloudfn-invoke'
 import { subdomainMiddleware } from './src/middleware/subdomain'
 import prisma from './src/lib/prisma'
 
@@ -61,6 +63,8 @@ app.use('/auth', auth)
 app.use('/deploy', deploy)
 app.use('/deploy/:projectId/domains', domains)
 app.use('/internal', internal)
+app.use('/api/seeloudfn', seeloudfn)
+app.use('/seeloudfn', seeloudfnInvoke)
 app.use('/', github)
 
 const port = process.env.PORT ?? 3001

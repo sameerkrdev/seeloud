@@ -8,6 +8,7 @@ import { cloneRepo } from './lib/git'
 import { buildInDocker, detectBuildDir } from './lib/docker'
 import { assertViteProject } from './lib/validate'
 import { uploadDir } from './lib/r2'
+import { seeloudfnBuildJob, type SeeloudfnBuildJobData } from './seeloudfnBuild'
 
 interface DeployJobData {
   projectId: string
@@ -102,12 +103,14 @@ async function processJob(job: Job<DeployJobData>): Promise<void> {
   }
 }
 
+const redisConnection = {
+  host: process.env['REDIS_HOST'] ?? 'localhost',
+  port: Number(process.env['REDIS_PORT'] ?? 6379),
+}
+
 export function createWorker(): Worker<DeployJobData> {
   const worker = new Worker<DeployJobData>('deployments', processJob, {
-    connection: {
-      host: process.env['REDIS_HOST'] ?? 'localhost',
-      port: Number(process.env['REDIS_PORT'] ?? 6379),
-    },
+    connection: redisConnection,
     concurrency: 2,
   })
 
@@ -117,6 +120,23 @@ export function createWorker(): Worker<DeployJobData> {
 
   worker.on('completed', (job) => {
     console.log(`Job ${job.id} completed`)
+  })
+
+  return worker
+}
+
+export function createSeeloudfnWorker(): Worker<SeeloudfnBuildJobData> {
+  const worker = new Worker<SeeloudfnBuildJobData>('seeloudfn-builds', seeloudfnBuildJob, {
+    connection: redisConnection,
+    concurrency: 2,
+  })
+
+  worker.on('failed', (job, err) => {
+    console.error(`[seeloudfn] Job ${job?.id} failed:`, err.message)
+  })
+
+  worker.on('completed', (job) => {
+    console.log(`[seeloudfn] Job ${job.id} completed`)
   })
 
   return worker
