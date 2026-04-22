@@ -61,7 +61,6 @@ model SeeloudfnFunction {
   userId       String
   user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   name         String
-  buildCommand String?
   entry        String       @default("index.js")
   status       SeeloudfnStatus @default(QUEUED)
   bundleKey    String?
