@@ -9,6 +9,8 @@ import internal from './src/routes/internal'
 import domains from './src/routes/domains'
 import seeloudfn from './src/routes/seeloudfn'
 import seeloudfnInvoke from './src/routes/seeloudfn-invoke'
+import seeloudcron from './src/routes/seeloudcron'
+import seeloudcronRuns from './src/routes/seeloudcron-runs'
 import { subdomainMiddleware } from './src/middleware/subdomain'
 import prisma from './src/lib/prisma'
 import { logger } from './src/lib/logger'
@@ -70,6 +72,8 @@ app.use('/deploy', deploy)
 app.use('/deploy/:projectId/domains', domains)
 app.use('/internal', internal)
 app.use('/api/seeloudfn', seeloudfn)
+app.use('/api/seeloudcron/jobs', seeloudcron)
+app.use('/api/seeloudcron/runs', seeloudcronRuns)
 app.use('/seeloudfn', seeloudfnInvoke)
 app.use('/', github)
 

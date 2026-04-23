@@ -116,4 +116,105 @@ export const api = {
 
   deleteSeeloudfnFunction: (id: string) =>
     request<{ ok: boolean }>(`/api/seeloudfn/${id}`, { method: 'DELETE' }),
+
+  // ---- Seeloudcron ----
+  getSeeloudcronJobs: () =>
+    request<{ jobs: SeeloudcronJob[] }>('/api/seeloudcron/jobs'),
+
+  getSeeloudcronJob: (id: string) =>
+    request<{ job: SeeloudcronJob }>(`/api/seeloudcron/jobs/${id}`),
+
+  createSeeloudcronJob: (data: CreateSeeloudcronJobInput) =>
+    request<{ job: SeeloudcronJob }>('/api/seeloudcron/jobs', { method: 'POST', body: JSON.stringify(data) }),
+
+  updateSeeloudcronJob: (id: string, data: Partial<CreateSeeloudcronJobInput> & { active?: boolean }) =>
+    request<{ job: SeeloudcronJob }>(`/api/seeloudcron/jobs/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
+
+  deleteSeeloudcronJob: (id: string) =>
+    request<{ ok: boolean }>(`/api/seeloudcron/jobs/${id}`, { method: 'DELETE' }),
+
+  triggerSeeloudcronJob: (id: string) =>
+    request<{ runId: string }>(`/api/seeloudcron/jobs/${id}/trigger`, { method: 'POST' }),
+
+  getSeeloudcronRuns: (jobId: string, page = 1, limit = 20) =>
+    request<{ runs: SeeloudcronRun[]; total: number; page: number; limit: number }>(
+      `/api/seeloudcron/jobs/${jobId}/runs?page=${page}&limit=${limit}`
+    ),
+
+  getSeeloudcronRun: (runId: string) =>
+    request<{ run: SeeloudcronRun & { logs: SeeloudcronRunLog[]; job: { id: string; name: string; functionId: string } } }>(
+      `/api/seeloudcron/runs/${runId}`
+    ),
+}
+
+export type ScheduleKind = 'DAILY' | 'WEEKLY' | 'INTERVAL' | 'ONCE' | 'CRON'
+export type JobRunStatus = 'QUEUED' | 'RUNNING' | 'SUCCEEDED' | 'FAILED' | 'TIMEOUT'
+
+export interface SeeloudcronJob {
+  id: string
+  name: string
+  functionId: string
+  function?: { id: string; name: string; status: string }
+  active: boolean
+  recurring: boolean
+  scheduleKind: ScheduleKind
+  timeOfDay?: string | null
+  daysOfWeek: number[]
+  intervalSec?: number | null
+  cronExpr?: string | null
+  runAt?: string | null
+  method: string
+  path: string
+  query?: Record<string, string> | null
+  headers?: Record<string, string> | null
+  body?: string | null
+  maxRetries: number
+  timeoutMs: number
+  nextRunAt: string
+  lastRunAt?: string | null
+  createdAt: string
+  updatedAt: string
+  runs?: Pick<SeeloudcronRun, 'status' | 'finishedAt'>[]
+}
+
+export interface SeeloudcronRun {
+  id: string
+  jobId: string
+  attempt: number
+  status: JobRunStatus
+  scheduledFor: string
+  startedAt?: string | null
+  finishedAt?: string | null
+  durationMs?: number | null
+  httpStatus?: number | null
+  responseBody?: string | null
+  errorMessage?: string | null
+  createdAt: string
+}
+
+export interface SeeloudcronRunLog {
+  id: string
+  runId: string
+  line: string
+  stream: string
+  createdAt: string
+}
+
+export interface CreateSeeloudcronJobInput {
+  name: string
+  functionId: string
+  recurring?: boolean
+  scheduleKind: ScheduleKind
+  timeOfDay?: string
+  daysOfWeek?: number[]
+  intervalSec?: number
+  cronExpr?: string
+  runAt?: string
+  method?: string
+  path?: string
+  query?: Record<string, string>
+  headers?: Record<string, string>
+  body?: string
+  maxRetries?: number
+  timeoutMs?: number
 }
