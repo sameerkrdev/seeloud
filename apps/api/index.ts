@@ -11,17 +11,28 @@ import seeloudfn from './src/routes/seeloudfn'
 import seeloudfnInvoke from './src/routes/seeloudfn-invoke'
 import seeloudcron from './src/routes/seeloudcron'
 import seeloudcronRuns from './src/routes/seeloudcron-runs'
+import actionsWebhook from './src/routes/actions-webhook'
+import actionsRepos from './src/routes/actions-repos'
+import actionsRuns from './src/routes/actions-runs'
+import actionsInternal from './src/routes/actions-internal'
+import sandboxRouter from './src/routes/sandbox'
+import sandboxKeysRouter from './src/routes/sandbox-keys'
+import mcpRouter from './src/routes/mcp'
 import { subdomainMiddleware } from './src/middleware/subdomain'
 import prisma from './src/lib/prisma'
 import { logger } from './src/lib/logger'
 
 if (!process.env['WORKER_SECRET']) throw new Error('WORKER_SECRET env var is required')
+if (!process.env['SANDBOX_ENGINE_URL']) throw new Error('SANDBOX_ENGINE_URL env var is required')
+if (!process.env['SANDBOX_ENGINE_SECRET']) throw new Error('SANDBOX_ENGINE_SECRET env var is required')
 
 const isDev = process.env['NODE_ENV'] !== 'production'
 
 const app = express()
 
 app.use(cors({ origin: '*' }))
+// Raw body required for GitHub webhook HMAC verification — must precede express.json()
+app.use('/webhook', express.raw({ type: 'application/json' }))
 app.use(express.json())
 app.use(pinoHttp({
   logger,
@@ -88,6 +99,15 @@ app.use('/api/seeloudcron/jobs', seeloudcron)
 app.use('/api/seeloudcron/runs', seeloudcronRuns)
 app.use('/seeloudfn', seeloudfnInvoke)
 app.use('/', github)
+
+app.use('/webhook', actionsWebhook)
+app.use('/api/repos', actionsRepos)
+app.use('/api/runs', actionsRuns)
+app.use('/internal', actionsInternal)
+
+app.use('/api/sandbox/keys', sandboxKeysRouter)
+app.use('/api/sandbox', sandboxRouter)
+app.use('/mcp', mcpRouter)
 
 const port = process.env.PORT ?? 3001
 app.listen(port, () => logger.info({ port }, 'API running'))
