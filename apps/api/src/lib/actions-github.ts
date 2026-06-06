@@ -1,8 +1,9 @@
 import { createLogger } from '@repo/logger'
+import type { WorkflowStep } from './actions-yaml-parser'
 
 const GH_API = 'https://api.github.com'
 const USER_AGENT = 'seeloud-actions'
-const logger = createLogger('seeloud-actions:github')
+const logger = createLogger('api:github')
 
 function ghHeaders(token: string) {
   return {
