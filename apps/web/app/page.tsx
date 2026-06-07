@@ -4,6 +4,8 @@ import { Pillars } from '@/components/landing/sections/pillars'
 import { Deployments } from '@/components/landing/sections/deployments'
 import { Seeloudfn } from '@/components/landing/sections/seeloudfn'
 import { Seeloudcron } from '@/components/landing/sections/seeloudcron'
+import { SeeloudActions } from '@/components/landing/sections/seeloud-actions'
+import { SeeloudSandbox } from '@/components/landing/sections/seeloud-sandbox'
 import { DxStrip } from '@/components/landing/sections/dx-strip'
 import { ResourcesStrip } from '@/components/landing/sections/resources-strip'
 import { Pricing } from '@/components/landing/sections/pricing'
@@ -20,6 +22,8 @@ export default function LandingPage() {
         <Deployments />
         <Seeloudfn />
         <Seeloudcron />
+        <SeeloudActions />
+        <SeeloudSandbox />
         <DxStrip />
         <ResourcesStrip />
         <Pricing />
