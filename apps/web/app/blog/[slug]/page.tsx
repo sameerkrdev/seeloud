@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { posts, getPost } from '../_data/posts'
 import { SeeloudfnRuntimePost } from '../_posts/seeloudfn-runtime'
+import { SeeloudActionPost } from '../_posts/seeloud-action'
 
 export function generateStaticParams() {
   return posts.map((p) => ({ slug: p.slug }))
@@ -41,6 +42,7 @@ export async function generateMetadata({
 
 const postComponents: Record<string, React.ComponentType> = {
   'seeloudfn-runtime': SeeloudfnRuntimePost,
+  'seeloud-action': SeeloudActionPost,
 }
 
 export default async function BlogPostPage({

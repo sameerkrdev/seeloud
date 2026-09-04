@@ -10,6 +10,16 @@ export type BlogPost = {
 
 export const posts: BlogPost[] = [
   {
+    slug: 'seeloud-action',
+    title: 'Inside seeloud-action: How Seeloud Runs Your CI Workflows',
+    description:
+      'A deep technical dive into action-worker — the Bun-based CI engine that consumes the seeloud-actions BullMQ queue, clones your repo at a commit SHA, boots a Docker container, and runs every workflow step (run: and uses:) with logs streamed live to the dashboard.',
+    publishedAt: '2026-07-03',
+    tags: ['ci', 'docker', 'github-actions', 'bullmq', 'architecture'],
+    author: 'Seeloud Engineering',
+    readingTimeMin: 20,
+  },
+  {
     slug: 'seeloudfn-runtime',
     title: 'Inside seeloudfn-runtime: How Seeloud Executes Serverless Functions',
     description:
