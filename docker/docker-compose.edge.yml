@@ -1,0 +1,22 @@
+# For the shared VM: infra/edge's Caddy owns 80/443 and reaches these services over the `edge` network.
+#   (start infra/edge first — it creates the network)
+#   docker compose -f docker-compose-prod.yml -f docker-compose.edge.yml up -d --build
+services:
+  caddy:
+    profiles: [standalone] # off; the shared Caddy proxies instead
+  web:
+    networks:
+      seeloud: {}
+      edge: { aliases: [seeloud-web] }
+  api:
+    networks:
+      seeloud: {}
+      edge: { aliases: [seeloud-api] }
+  ws:
+    networks:
+      seeloud: {}
+      edge: { aliases: [seeloud-ws] }
+
+networks:
+  edge:
+    external: true

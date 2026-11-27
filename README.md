@@ -158,6 +158,8 @@ docker compose -f docker/docker-compose-prod.yml up -d
 
 See `docker/.env.compose.example` for all required variables and inline documentation.
 
+Sharing the server with other projects behind one Caddy? Add `-f docker/docker-compose.edge.yml` (see that file's header).
+
 ---
 
 ## Shared packages

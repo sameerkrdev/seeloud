@@ -10,6 +10,11 @@ COPY package.json bun.lock turbo.json ./
 COPY packages ./packages
 COPY apps/web ./apps/web
 
+# NEXT_PUBLIC_* are inlined at build time; without these the bundle falls back to localhost
+ARG NEXT_PUBLIC_API_URL
+ARG NEXT_PUBLIC_WS_URL
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL NEXT_PUBLIC_WS_URL=$NEXT_PUBLIC_WS_URL
+
 # Install dependencies
 RUN npm install
 
