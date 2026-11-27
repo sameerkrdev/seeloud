@@ -88,7 +88,7 @@ function PipelineVisual() {
                 <line
                   x1={x - 44} y1={y}
                   x2={x - 16} y2={y}
-                  stroke={stages[i - 1].status === 'done' ? '#FF6A2A' : '#222222'}
+                  stroke={stages[i - 1]?.status === 'done' ? '#FF6A2A' : '#222222'}
                   strokeWidth="2"
                 />
               )}
